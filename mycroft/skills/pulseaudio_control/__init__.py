@@ -43,11 +43,15 @@ class PulseAudioControlSkill(MycroftSkill):
 
     def handle_list_source_intent(self, message):
         self.speak_dialog("Source.List")
-        for sink in pulse.sink_list():
-            self.speak(self, sink)
+        for source in pulse.source_list():
+            say = str(source.proplist['device.description']) + " is device number " + str(source.proplist['alsa.card'])
+            self.speak(say)
 
     def handle_list_sink_intent(self, message):
         self.speak_dialog("Sink.List")
+        for sink in pulse.sink_list():
+            say = str(sink.proplist['device.description']) + " is device number " + str(sink.proplist['alsa.card'])
+            self.speak(say)
 
     def stop(self):
         pass
