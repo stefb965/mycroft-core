@@ -37,9 +37,17 @@ class PulseAudioControlSkill(MycroftSkill):
             require("SourceList").build()
         self.register_intent(list_source_intent, self.handle_list_source_intent)
 
-        list_sink_intent = IntentBuilder("SinkList"). \
+        list_sink_intent = IntentBuilder("SinkList").\
             require("SinkList").build()
         self.register_intent(list_sink_intent, self.handle_list_sink_intent)
+
+        intent = IntentBuilder("SourceSetIntent").require(
+            "SourceSet").require("Device").build()
+        self.register_intent(intent, self.handle_set_source_intent)
+
+        intent = IntentBuilder("SinkSetIntent").require(
+            "SinkSet").require("Device").build()
+        self.register_intent(intent, self.handle_set_sink_intent)
 
     def handle_list_source_intent(self, message):
         self.speak_dialog("Source.List")
@@ -52,6 +60,12 @@ class PulseAudioControlSkill(MycroftSkill):
         for sink in pulse.sink_list():
             say = str(sink.proplist['device.description']) + " is device number " + str(sink.proplist['alsa.card'])
             self.speak(say)
+
+    def handle_set_source_intent(self, message):
+        self.speak("Setting default source to " + message.data.get("Device"))
+
+    def handle_set_sink_intent(self, message):
+        self.speak("Setting default sink to " + message.data.get("Device"))
 
     def stop(self):
         pass
